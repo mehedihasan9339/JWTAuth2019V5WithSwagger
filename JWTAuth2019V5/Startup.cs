@@ -108,10 +108,9 @@ namespace JWTAuth2019V5
 
 			app.UseHttpsRedirection();
 
+			//Ordering is important(Authentication > Routing > Authorization)
 			app.UseRouting();
-
 			app.UseAuthentication();
-
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

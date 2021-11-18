@@ -1,4 +1,5 @@
 ﻿using JWTAuth2019V5.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -138,7 +139,7 @@ namespace JWTAuth2019V5.Controllers
 		}
 
 
-		[Authorize]
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[HttpGet]
 		[Route("testAction")]
 		public IActionResult TestAction()
