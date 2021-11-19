@@ -208,7 +208,7 @@ namespace JWTAuth2019V5.Controllers
 
 		[HttpPost]
 		[Route("reset-password-token")]
-		public async Task<IActionResult> ResetPasswordToken([FromBody] ResetPasswordTokenViewModel)
+		public async Task<IActionResult> ResetPasswordToken([FromBody] ResetPasswordTokenViewModel model)
 		{
 			var user = await _userManager.FindByNameAsync(model.username);
 			if (user == null)
