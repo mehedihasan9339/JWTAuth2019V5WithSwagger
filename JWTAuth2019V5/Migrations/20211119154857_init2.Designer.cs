@@ -4,14 +4,16 @@ using JWTAuth2019V5.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JWTAuth2019V5.Migrations
 {
     [DbContext(typeof(databaseContext))]
-    partial class databaseContextModelSnapshot : ModelSnapshot
+    [Migration("20211119154857_init2")]
+    partial class init2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

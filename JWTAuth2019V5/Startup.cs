@@ -38,9 +38,18 @@ namespace JWTAuth2019V5
 
 			services.AddDbContext<databaseContext>(option => option.UseSqlServer(Configuration.GetConnectionString("MyConnection")));
 
-			services.AddIdentity<ApplicationUser, IdentityRole>()
-					.AddEntityFrameworkStores<databaseContext>()
-					.AddDefaultTokenProviders();
+			services.AddIdentity<ApplicationUser, IdentityRole>(option => {
+				option.SignIn.RequireConfirmedEmail = false;
+				option.SignIn.RequireConfirmedPhoneNumber = false;
+				option.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-0123456789";
+				option.Password.RequireDigit = true;
+				option.Password.RequiredLength = 6;
+				option.Password.RequireLowercase = false;
+				option.Password.RequireNonAlphanumeric = false;
+				option.Password.RequireUppercase = false;
+			})
+			.AddEntityFrameworkStores<databaseContext>()
+			.AddDefaultTokenProviders();
 
 			services.AddAuthentication(option =>
 			{

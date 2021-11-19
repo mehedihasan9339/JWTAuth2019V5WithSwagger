@@ -14,5 +14,6 @@ namespace JWTAuth2019V5.Context
 		{
 
 		}
+		public DbSet<Employee> employees { get; set; }
 	}
 }

@@ -53,7 +53,7 @@ namespace JWTAuth2019V5.Controllers
 
 			if (!result.Succeeded)
 			{
-				return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Error", message = "User creation failed" });
+				return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Error", message = result.ToString() });
 			}
 			else
 			{
@@ -84,7 +84,7 @@ namespace JWTAuth2019V5.Controllers
 
 			if (!result.Succeeded)
 			{
-				return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Error", message = "User creation failed" });
+				return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Error", message = result.ToString() });
 			}
 
 			if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
@@ -137,6 +137,37 @@ namespace JWTAuth2019V5.Controllers
 			};
 			return Unauthorized();
 		}
+
+		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+		[HttpPost]
+		[Route("change-password")]
+		public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+		{
+			var user = await _userManager.FindByNameAsync(model.username);
+			if (user == null)
+			{
+				return StatusCode(StatusCodes.Status404NotFound, new Response { status = "Error", message = "User not found" });
+			}
+			if (string.Compare(model.newPassword, model.confirmPassword) != 0)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new Response { status = "Error", message = "Password missmatch" });
+			}
+
+			var result = await _userManager.ChangePasswordAsync(user, model.currentPassword, model.newPassword);
+
+			if (!result.Succeeded)
+			{
+				var errors = new List<string>();
+				foreach (var item in result.Errors)
+				{
+					errors.Add(item.Description);
+				}
+				return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Error", message = string.Join(',', errors) });
+			}
+
+			return Ok(new Response { status = "Success", message = "Password Changed Successfully" });
+		}
+
 
 
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
