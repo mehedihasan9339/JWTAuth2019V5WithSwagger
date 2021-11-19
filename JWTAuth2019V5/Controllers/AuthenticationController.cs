@@ -169,6 +169,59 @@ namespace JWTAuth2019V5.Controllers
 		}
 
 
+		[Authorize(Roles = "Admin")]
+		[HttpPost]
+		[Route("reset-password-admin")]
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
+		{
+			var user = await _userManager.FindByNameAsync(model.username);
+			if (user == null)
+			{
+				return StatusCode(StatusCodes.Status404NotFound, new Response { status = "Error", message = "User not found" });
+			}
+			if (string.Compare(model.newPassword, model.confirmPassword) != 0)
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new Response { status = "Error", message = "Password missmatch" });
+			}
+
+			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+			if (string.IsNullOrEmpty(token))
+			{
+				return StatusCode(StatusCodes.Status400BadRequest, new Response { status = "Error", message = "Invalid Token" });
+			}
+
+			var result = await _userManager.ResetPasswordAsync(user, token, model.newPassword);
+
+			if (!result.Succeeded)
+			{
+				var errors = new List<string>();
+				foreach (var item in result.Errors)
+				{
+					errors.Add(item.Description);
+				}
+				return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Error", message = string.Join(',', errors) });
+			}
+
+			return Ok(new Response { status = "Success", message = "Password Changed Successfully" });
+		}
+
+		[HttpPost]
+		[Route("reset-password-token")]
+		public async Task<IActionResult> ResetPasswordToken([FromBody] ResetPasswordTokenViewModel)
+		{
+			var user = await _userManager.FindByNameAsync(model.username);
+			if (user == null)
+			{
+				return StatusCode(StatusCodes.Status404NotFound, new Response { status = "Error", message = "User not found" });
+			}
+
+			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+			return Ok(new { token = token });
+		}
+
+
 
 		[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 		[HttpGet]

@@ -71,6 +71,10 @@ namespace JWTAuth2019V5
 					};
 				});
 
+			services.Configure<DataProtectionTokenProviderOptions>(option =>
+			{
+				option.TokenLifespan = TimeSpan.FromHours(2);
+			});
 
 
 			services.AddSwaggerGen(c =>
